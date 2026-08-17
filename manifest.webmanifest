@@ -1,11 +1,11 @@
 {
-  "name": "싱가포르·말레이시아 여행 준비물",
-  "short_name": "여행준비",
+  "name": "싱가포르·말레이시아 5박 7일 여행",
+  "short_name": "싱말여행",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f6f8fb",
+  "background_color": "#f5f7fb",
   "theme_color": "#0f766e",
-  "description": "싱가포르·말레이시아 5박 7일 여행 준비물 체크 앱",
+  "description": "D-Day, 여행 준비물, 5박 7일 일정표를 관리하는 여행 앱",
   "icons": [
     {
       "src": "icon-192.png",

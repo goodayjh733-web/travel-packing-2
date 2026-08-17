@@ -1,15 +1,18 @@
-싱가포르·말레이시아 여행 준비물 PWA
+싱가포르·말레이시아 여행 앱 v3
 
-파일 구성
-- index.html : 앱 본체
-- manifest.webmanifest : 앱 설치 정보
-- sw.js : 오프라인 실행용 서비스 워커
-- icon-192.png / icon-512.png : 앱 아이콘
+업데이트 기능
+- 출발일 입력
+- D-Day 자동 계산
+- 7일 여행 날짜 자동 표시
+- 준비물 체크리스트 + 진행률
+- 미완료만 보기/검색/직접 추가
+- 5박 7일 일정표
+- 일정 시간/장소/메모 직접 수정
+- 일정 항목 추가/삭제
+- 자동 저장(localStorage)
+- PWA 홈 화면 설치 및 오프라인 지원
 
-중요
-PWA의 '홈 화면 설치' 및 서비스 워커 기능은 일반적으로 HTTPS 웹주소에서 열어야 정상 작동합니다.
-GitHub Pages, Netlify, Cloudflare Pages 같은 정적 웹 호스팅에 이 폴더의 파일을 그대로 올리면 됩니다.
-
-휴대폰 설치
-Android Chrome: 웹주소 접속 → 설치 배너 또는 메뉴 → '앱 설치/홈 화면에 추가'
-iPhone Safari: 웹주소 접속 → 공유 버튼 → '홈 화면에 추가'
+GitHub Pages 업데이트 방법
+1. 기존 travel-packing-2 저장소에서 index.html, manifest.webmanifest, sw.js, icon 파일을 이 버전으로 교체
+2. Commit changes
+3. GitHub Pages가 자동으로 다시 배포될 때까지 잠시 기다린 뒤 새로고침
