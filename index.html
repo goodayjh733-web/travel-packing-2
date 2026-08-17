@@ -13,34 +13,68 @@
   <style>
     :root{
       --bg:#f5f7fb;--card:#fff;--text:#172033;--sub:#6f7c91;--line:#e5eaf0;
-      --p:#0f766e;--p2:#2563eb;--soft:#edfdf8;--danger:#dc2626;
+      --p:#0f766e;--p2:#2563eb;--soft:#edfdf8;--danger:#dc2626;--warn:#b45309;
       --shadow:0 10px 28px rgba(15,23,42,.08)
     }
     *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;padding-bottom:86px}
-    .app{max-width:820px;margin:auto}
-    .hero{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:calc(22px + env(safe-area-inset-top)) 18px 22px;border-radius:0 0 28px 28px;box-shadow:var(--shadow)}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+      padding-bottom:92px
+    }
+    .app{max-width:860px;margin:auto}
+    .hero{
+      background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;
+      padding:calc(22px + env(safe-area-inset-top)) 18px 22px;
+      border-radius:0 0 28px 28px;box-shadow:var(--shadow)
+    }
     .mini{font-size:12px;opacity:.86;font-weight:800;letter-spacing:.04em}
     h1{font-size:27px;line-height:1.25;margin:6px 0 14px}
-    .datebox{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;background:rgba(255,255,255,.14);padding:14px;border-radius:18px}
+    .datebox{
+      display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;
+      background:rgba(255,255,255,.14);padding:14px;border-radius:18px
+    }
     .datebox label{font-size:12px;font-weight:800;display:block;margin-bottom:6px}
     .datebox input{width:100%;border:0;border-radius:12px;padding:11px 12px;font-size:15px}
-    .dday{min-width:94px;text-align:center;background:#fff;color:var(--p);border-radius:16px;padding:10px 8px;font-weight:900;font-size:24px}
+    .dday{
+      min-width:94px;text-align:center;background:#fff;color:var(--p);
+      border-radius:16px;padding:10px 8px;font-weight:900;font-size:24px
+    }
     .triprange{font-size:13px;opacity:.92;margin-top:10px;line-height:1.5}
-    .tabs{position:sticky;top:0;z-index:8;display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:10px 12px;background:rgba(245,247,251,.94);backdrop-filter:blur(10px)}
-    .tab{border:1px solid var(--line);background:#fff;border-radius:13px;padding:10px 7px;font-size:13px;font-weight:900}
+
+    .tabs{
+      position:sticky;top:0;z-index:8;display:grid;grid-template-columns:repeat(4,1fr);
+      gap:6px;padding:10px 10px;background:rgba(245,247,251,.94);backdrop-filter:blur(10px)
+    }
+    .tab{
+      border:1px solid var(--line);background:#fff;border-radius:13px;
+      padding:10px 4px;font-size:12px;font-weight:900
+    }
     .tab.active{background:var(--p);color:#fff;border-color:var(--p)}
-    .page{display:none;padding:8px 14px 20px}
+    .page{display:none;padding:8px 14px 22px}
     .page.active{display:block}
-    .notice{background:var(--soft);border:1px solid #cbeee4;border-radius:16px;padding:13px 14px;font-size:13px;line-height:1.6;margin-bottom:12px}
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin:10px 2px 9px}
+
+    .notice{
+      background:var(--soft);border:1px solid #cbeee4;border-radius:16px;
+      padding:13px 14px;font-size:13px;line-height:1.6;margin-bottom:12px
+    }
+    .section-title{display:flex;justify-content:space-between;align-items:center;margin:14px 2px 9px}
     .section-title h2{font-size:18px;margin:0}
-    button{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:13px;padding:10px 12px;font-weight:850;cursor:pointer}
+    button{
+      border:1px solid var(--line);background:#fff;color:var(--text);
+      border-radius:13px;padding:10px 12px;font-weight:850;cursor:pointer
+    }
     button.primary{background:var(--p);color:#fff;border-color:var(--p)}
+    button.soft{background:#f8fafc}
     button.danger{color:var(--danger)}
+    button:disabled{opacity:.35;cursor:default}
     input,textarea,select{font:inherit;color:var(--text)}
-    input[type=text],input[type=time],input[type=date],textarea,select{border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;outline:none}
+    input[type=text],input[type=time],input[type=date],input[type=datetime-local],textarea,select{
+      border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;outline:none
+    }
     textarea{resize:vertical}
+
     .progresscard,.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
     .progresscard{padding:15px;margin-bottom:12px}
     .phead{display:flex;justify-content:space-between;font-weight:900;margin-bottom:8px}
@@ -60,29 +94,83 @@
     .imeta{font-size:11px;color:var(--sub);margin-top:3px}
     .tag{font-size:10px;padding:5px 7px;border-radius:999px;background:#eef2ff;color:#3949ab;font-weight:800;white-space:nowrap}
     .addbox{display:grid;grid-template-columns:1fr;gap:8px;padding:14px;margin-top:12px}
-    .daycard{padding:14px;margin-bottom:11px}
-    .daytop{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}
-    .dayname{font-weight:950;font-size:16px}
-    .daydate{font-size:12px;color:var(--sub)}
-    .event{display:grid;grid-template-columns:72px 1fr auto;gap:8px;align-items:start;padding:10px 0;border-top:1px dashed var(--line)}
-    .event:first-of-type{border-top:0}
+
+    /* Schedule */
+    .daycard{
+      padding:0;margin-bottom:14px;overflow:hidden;
+      border-left:8px solid var(--day-color,#dbeafe);
+      background:linear-gradient(90deg,var(--day-tint,#eff6ff),#fff 35%)
+    }
+    .daytop{display:flex;gap:8px;align-items:flex-start;padding:14px 14px 10px}
+    .day-main{flex:1;min-width:0}
+    .day-title-input{
+      width:100%;font-weight:950;font-size:16px;border:1px solid var(--line);
+      border-radius:10px;padding:8px 9px;background:rgba(255,255,255,.92)
+    }
+    .daydate{font-size:12px;color:var(--sub);margin-top:5px;font-weight:800}
+    .colorbox{
+      display:flex;align-items:center;gap:5px;padding-top:2px;
+      font-size:11px;color:var(--sub);white-space:nowrap
+    }
+    .colorbox input[type=color]{
+      width:34px;height:34px;padding:2px;border:1px solid var(--line);
+      background:#fff;border-radius:10px
+    }
+    .events{padding:0 12px}
+    .event{
+      display:grid;grid-template-columns:72px 1fr;gap:8px;align-items:start;
+      padding:12px 2px;border-top:1px dashed #d8dee7
+    }
+    .event:first-child{border-top:0}
     .event input[type=time]{width:72px;padding:8px 6px;font-size:12px}
     .event-main input{width:100%;margin-bottom:6px}
-    .event-main textarea{width:100%;min-height:55px;font-size:13px}
-    .iconbtn{padding:8px 9px;color:var(--danger)}
-    .add-event{width:100%;margin-top:8px}
+    .event-main textarea{width:100%;min-height:58px;font-size:13px;margin-bottom:7px}
+    .event-actions{display:flex;gap:6px;flex-wrap:wrap}
+    .smallbtn{padding:7px 9px;border-radius:10px;font-size:12px}
+    .mapbtn{color:#1d4ed8}
+    .movebtn{color:#334155}
+    .deletebtn{color:var(--danger)}
+    .add-event{width:calc(100% - 24px);margin:0 12px 13px}
+
+    /* Reservations */
+    .booking-grid{display:grid;gap:12px}
+    .booking-card{padding:14px}
+    .booking-card h3{font-size:16px;margin:0 0 11px}
+    .form-grid{display:grid;grid-template-columns:1fr;gap:8px}
+    .field label{display:block;font-size:11px;font-weight:850;color:var(--sub);margin:0 0 5px 3px}
+    .field input,.field textarea,.field select{width:100%}
+    .field textarea{min-height:62px}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .booking-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+    .hotel-card{position:relative}
+    .hotel-title-row{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}
+    .hotel-title-row strong{font-size:15px}
+    .add-hotel{width:100%;margin-top:12px}
+
     .info-grid{display:grid;gap:11px}
     .info-card{padding:15px}
     .info-card h3{margin:0 0 7px;font-size:16px}
     .info-card p{margin:0;font-size:13px;line-height:1.65;color:#49566a}
-    .bottom{position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(255,255,255,.96);border-top:1px solid var(--line);backdrop-filter:blur(10px);padding:9px 12px calc(9px + env(safe-area-inset-bottom))}
-    .bottom-inner{max-width:820px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+
+    .bottom{
+      position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(255,255,255,.96);
+      border-top:1px solid var(--line);backdrop-filter:blur(10px);
+      padding:9px 12px calc(9px + env(safe-area-inset-bottom))
+    }
+    .bottom-inner{max-width:860px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
     .bottom button{font-size:12px;padding:9px 6px}
-    .install{display:none;margin:12px 14px 0;padding:12px 13px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);align-items:center;justify-content:space-between;gap:9px}
+    .install{
+      display:none;margin:12px 14px 0;padding:12px 13px;background:#fff;border:1px solid var(--line);
+      border-radius:16px;box-shadow:var(--shadow);align-items:center;justify-content:space-between;gap:9px
+    }
     .install.show{display:flex}
+
     @media(min-width:650px){
-      .app{padding:0 10px}.hero{margin-top:15px;border-radius:28px}.addbox{grid-template-columns:1fr 190px auto}
+      .app{padding:0 10px}.hero{margin-top:15px;border-radius:28px}
+      .addbox{grid-template-columns:1fr 190px auto}
       .info-grid{grid-template-columns:1fr 1fr}
+      .booking-grid{grid-template-columns:1fr 1fr}
+      .form-grid.two-col{grid-template-columns:1fr 1fr}
     }
   </style>
 </head>
@@ -109,11 +197,12 @@
   <nav class="tabs">
     <button class="tab active" data-page="packing">🧳 준비물</button>
     <button class="tab" data-page="schedule">🗓️ 일정</button>
-    <button class="tab" data-page="info">ℹ️ 여행정보</button>
+    <button class="tab" data-page="booking">✈️ 예약</button>
+    <button class="tab" data-page="info">ℹ️ 정보</button>
   </nav>
 
   <section class="page active" id="packing">
-    <div class="notice">체크 상태와 여행 날짜는 이 기기에 자동 저장됩니다. 준비물을 직접 추가할 수도 있습니다.</div>
+    <div class="notice">체크 상태와 여행 날짜는 이 기기에 자동 저장됩니다. 기존 버전에 저장된 출발일과 준비물 체크도 가능한 경우 자동으로 이어받습니다.</div>
     <div class="progresscard">
       <div class="phead"><span id="summary">0 / 0개 준비 완료</span><span id="pct">0%</span></div>
       <div class="track"><div class="bar" id="bar"></div></div>
@@ -131,8 +220,23 @@
   </section>
 
   <section class="page" id="schedule">
-    <div class="notice">아래 일정은 <b>예시</b>입니다. 여행 동선에 맞게 시간·장소·메모를 직접 수정하세요. 수정 내용도 자동 저장됩니다.</div>
+    <div class="notice">
+      DAY 제목·시간·장소·메모를 모두 직접 수정할 수 있습니다.
+      각 일정의 <b>↑ ↓</b> 버튼으로 순서를 바꾸고, <b>지도</b>를 누르면 입력한 장소를 지도에서 검색합니다.
+      색상 버튼으로 하루별 색상도 바꿀 수 있습니다.
+    </div>
     <div id="days"></div>
+  </section>
+
+  <section class="page" id="booking">
+    <div class="notice">항공편과 호텔 정보를 입력하면 자동 저장됩니다. 호텔의 지도 버튼은 호텔명/주소를 이용해 지도를 엽니다.</div>
+
+    <div class="section-title"><h2>✈️ 항공편</h2></div>
+    <div id="flightCards" class="booking-grid"></div>
+
+    <div class="section-title"><h2>🏨 호텔</h2></div>
+    <div id="hotelCards" class="booking-grid"></div>
+    <button class="primary add-hotel" id="addHotelBtn">+ 호텔 추가</button>
   </section>
 
   <section class="page" id="info">
@@ -148,13 +252,14 @@
 <nav class="bottom">
   <div class="bottom-inner">
     <button id="checkAllBtn">✓ 전체 체크</button>
-    <button id="copyBtn">📋 여행정보 복사</button>
+    <button id="copyBtn">📋 전체 복사</button>
     <button class="danger" id="resetBtn">↺ 초기화</button>
   </div>
 </nav>
 
 <script>
-const KEY="sgmy_travel_v3";
+const KEY="sgmy_travel_v7_full";
+const PREVIOUS_KEYS=["sgmy_travel_v6_sg_day1_2","sgmy_travel_v5_malaysia_first","sgmy_travel_v3"];
 
 const packingBase=[
  ["📄 서류·예약",[["여권","유효기간 확인","필수"],["항공권·탑승권","앱 또는 PDF 저장","필수"],["호텔 예약 확인서","오프라인 저장 권장","필수"],["여행자보험 정보","가입한 경우","권장"],["입국·여행 관련 확인자료","출발 직전 최신 안내 확인","확인"],["여권 사본","분실 대비","권장"]]],
@@ -169,140 +274,382 @@ const packingBase=[
 ];
 
 const scheduleBase=[
- {title:"DAY 1 · 출국 / 싱가포르 도착",events:[
-   {time:"09:00",place:"공항 출발",note:"여권·탑승권 확인 후 출국"},
-   {time:"18:00",place:"싱가포르 도착",note:"호텔 이동 및 체크인"},
-   {time:"20:00",place:"가벼운 야경 산책",note:"컨디션에 따라 조정"}
+ {title:"DAY 1 · 싱가포르 도착",color:"#3b82f6",events:[
+   {time:"",place:"인천국제공항",note:"출국 준비 및 탑승"},
+   {time:"",place:"싱가포르 창이공항",note:"싱가포르 도착"},
+   {time:"",place:"싱가포르 호텔",note:"호텔 이동 및 체크인"}
  ]},
- {title:"DAY 2 · 싱가포르 시내",events:[
-   {time:"09:00",place:"마리나베이 일대",note:"대표 명소 중심으로 이동"},
-   {time:"13:00",place:"점심 및 휴식",note:"호커센터 등 현지 음식 체험"},
-   {time:"18:00",place:"가든스 바이 더 베이",note:"저녁 시간대 관람"}
+ {title:"DAY 2 · 싱가포르",color:"#06b6d4",events:[
+   {time:"",place:"싱가포르 오전 일정",note:"장소와 시간을 직접 입력"},
+   {time:"",place:"싱가포르 오후 일정",note:"장소와 시간을 직접 입력"},
+   {time:"",place:"싱가포르 저녁 일정",note:"장소와 시간을 직접 입력"}
  ]},
- {title:"DAY 3 · 싱가포르 자유 일정",events:[
-   {time:"09:30",place:"센토사 또는 문화지구",note:"여행 취향에 따라 선택"},
-   {time:"15:00",place:"카페·쇼핑",note:"무리하지 않고 휴식 포함"},
-   {time:"19:00",place:"야경 또는 리버사이드",note:"저녁 산책"}
+ {title:"DAY 3 · 싱가포르 / 조호바루",color:"#14b8a6",events:[
+   {time:"",place:"싱가포르",note:"오전 일정 또는 체크아웃"},
+   {time:"",place:"조호바루",note:"국경 이동 및 도착"},
+   {time:"",place:"조호바루 호텔",note:"체크인 및 저녁 일정"}
  ]},
- {title:"DAY 4 · 말레이시아 이동",events:[
-   {time:"09:00",place:"싱가포르 체크아웃",note:"이동편과 소요시간 사전 확인"},
-   {time:"14:00",place:"말레이시아 숙소 체크인",note:"예: 쿠알라룸푸르 등 실제 목적지로 수정"},
-   {time:"18:00",place:"주변 탐방",note:"숙소 주변에서 가볍게 시작"}
+ {title:"DAY 4 · 조호바루 / 말라카 / 쿠알라룸푸르",color:"#22c55e",events:[
+   {time:"",place:"조호바루",note:"출발"},
+   {time:"",place:"말라카",note:"관광 및 식사"},
+   {time:"",place:"쿠알라룸푸르",note:"이동 및 호텔 체크인"}
  ]},
- {title:"DAY 5 · 말레이시아 핵심 일정",events:[
-   {time:"09:00",place:"대표 관광지",note:"실제 방문지로 수정"},
-   {time:"13:00",place:"현지 음식",note:"점심 및 휴식"},
-   {time:"19:00",place:"야경·쇼핑",note:"저녁 일정"}
+ {title:"DAY 5 · 쿠알라룸푸르",color:"#eab308",events:[
+   {time:"",place:"쿠알라룸푸르 오전 일정",note:"장소와 시간을 직접 입력"},
+   {time:"",place:"쿠알라룸푸르 오후 일정",note:"장소와 시간을 직접 입력"},
+   {time:"",place:"쿠알라룸푸르 저녁 일정",note:"장소와 시간을 직접 입력"}
  ]},
- {title:"DAY 6 · 말레이시아 자유 일정",events:[
-   {time:"09:30",place:"문화·도심 탐방",note:"박물관, 시장, 카페 등"},
-   {time:"15:00",place:"쇼핑 및 휴식",note:"귀국 전 필요한 물품 구입"},
-   {time:"20:00",place:"짐 정리",note:"여권·항공편·공항 이동 재확인"}
+ {title:"DAY 6 · 쿠알라룸푸르 / 인천",color:"#f97316",events:[
+   {time:"",place:"쿠알라룸푸르",note:"귀국 전 일정 및 체크아웃"},
+   {time:"",place:"쿠알라룸푸르 국제공항",note:"공항 이동 및 출국"},
+   {time:"",place:"인천국제공항",note:"귀국편 도착 예정"}
  ]},
- {title:"DAY 7 · 귀국",events:[
-   {time:"08:00",place:"호텔 체크아웃",note:"분실물 확인"},
-   {time:"11:00",place:"공항 이동",note:"항공편에 맞게 시간 수정"},
-   {time:"14:00",place:"귀국편 탑승",note:"안전하게 귀국"}
+ {title:"DAY 7 · 인천",color:"#a855f7",events:[
+   {time:"",place:"인천국제공항",note:"입국 및 수하물 수령"},
+   {time:"",place:"귀가",note:"집으로 이동"}
  ]}
 ];
 
-function fresh(){
+const flightBase=[
+ {label:"가는 항공편",airline:"",flightNo:"",from:"인천국제공항",to:"싱가포르 창이공항",depart:"",arrive:"",booking:"",note:""},
+ {label:"오는 항공편",airline:"",flightNo:"",from:"쿠알라룸푸르 국제공항",to:"인천국제공항",depart:"",arrive:"",booking:"",note:""}
+];
+
+const hotelBase=[
+ {city:"싱가포르",name:"",address:"",checkin:"",checkout:"",booking:"",note:""},
+ {city:"조호바루",name:"",address:"",checkin:"",checkout:"",booking:"",note:""},
+ {city:"쿠알라룸푸르",name:"",address:"",checkin:"",checkout:"",booking:"",note:""}
+];
+
+function makePacking(){
  let n=0;
+ return packingBase.map(([category,items])=>({
+   category,
+   items:items.map(([name,meta,tag])=>({id:"p"+(++n),name,meta,tag,done:false}))
+ }));
+}
+function fresh(){
  return {
-  departure:"",
-  packing:packingBase.map(([category,items])=>({category,items:items.map(([name,meta,tag])=>({id:"p"+(++n),name,meta,tag,done:false}))})),
-  schedule:JSON.parse(JSON.stringify(scheduleBase))
+   departure:"",
+   packing:makePacking(),
+   schedule:JSON.parse(JSON.stringify(scheduleBase)),
+   flights:JSON.parse(JSON.stringify(flightBase)),
+   hotels:JSON.parse(JSON.stringify(hotelBase))
  };
 }
-let state=(()=>{try{const x=JSON.parse(localStorage.getItem(KEY));if(x&&x.packing&&x.schedule)return x;}catch(e){}return fresh();})();
+function migratePrevious(base){
+ for(const key of PREVIOUS_KEYS){
+   try{
+     const old=JSON.parse(localStorage.getItem(key));
+     if(!old) continue;
+     if(old.departure) base.departure=old.departure;
+     if(Array.isArray(old.packing)){
+       const doneMap=new Map();
+       old.packing.forEach(g=>g.items?.forEach(i=>doneMap.set(i.name,!!i.done)));
+       base.packing.forEach(g=>g.items.forEach(i=>{
+         if(doneMap.has(i.name)) i.done=doneMap.get(i.name);
+       }));
+     }
+     return base;
+   }catch(e){}
+ }
+ return base;
+}
+function loadState(){
+ try{
+   const x=JSON.parse(localStorage.getItem(KEY));
+   if(x&&x.packing&&x.schedule){
+     if(!x.flights)x.flights=JSON.parse(JSON.stringify(flightBase));
+     if(!x.hotels)x.hotels=JSON.parse(JSON.stringify(hotelBase));
+     x.schedule.forEach((d,i)=>{if(!d.color)d.color=scheduleBase[i]?.color||"#3b82f6";});
+     return x;
+   }
+ }catch(e){}
+ return migratePrevious(fresh());
+}
+let state=loadState();
 let pending=false, deferredPrompt=null;
+
 function save(){localStorage.setItem(KEY,JSON.stringify(state));}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));}
-function localDateString(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,"0"),d=String(date.getDate()).padStart(2,"0");return `${y}-${m}-${d}`;}
 function fmtDate(date){return `${date.getMonth()+1}/${date.getDate()} (${["일","월","화","수","목","금","토"][date.getDay()]})`;}
+function hexToTint(hex){
+ let h=String(hex||"#3b82f6").replace("#","");
+ if(h.length===3)h=h.split("").map(x=>x+x).join("");
+ const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
+ return `rgba(${r},${g},${b},0.09)`;
+}
+function openMap(query){
+ const q=String(query||"").trim();
+ if(!q){alert("먼저 장소 또는 주소를 입력해주세요.");return;}
+ window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q),"_blank","noopener");
+}
 
 function updateDate(){
  const dep=document.getElementById("departure");
  dep.value=state.departure||"";
- const dday=document.getElementById("dday"), range=document.getElementById("triprange");
- if(!state.departure){dday.textContent="D-?";range.textContent="출발일을 입력하면 7일 일정 날짜가 자동으로 표시됩니다.";return;}
+ const dday=document.getElementById("dday"),range=document.getElementById("triprange");
+ if(!state.departure){
+   dday.textContent="D-?";
+   range.textContent="출발일을 입력하면 7일 일정 날짜가 자동으로 표시됩니다.";
+   return;
+ }
  const start=new Date(state.departure+"T00:00:00");
- const today=new Date(); today.setHours(0,0,0,0);
- const diff=Math.ceil((start-today)/86400000);
+ const today=new Date();today.setHours(0,0,0,0);
+ const diff=Math.round((start-today)/86400000);
  dday.textContent=diff>0?`D-${diff}`:diff===0?"D-DAY":`D+${Math.abs(diff)}`;
- const end=new Date(start); end.setDate(start.getDate()+6);
+ const end=new Date(start);end.setDate(start.getDate()+6);
  range.textContent=`여행 기간: ${fmtDate(start)} ~ ${fmtDate(end)} · 5박 7일`;
 }
 
 function renderPacking(){
  const q=document.getElementById("search").value.trim().toLowerCase();
  const root=document.getElementById("packingCards");root.innerHTML="";
+ let visible=0;
  state.packing.forEach(g=>{
    const show=g.items.filter(i=>(i.name+" "+i.meta+" "+i.tag).toLowerCase().includes(q)&&(!pending||!i.done));
    if(!show.length)return;
+   visible+=show.length;
    const card=document.createElement("div");card.className="card";
    const done=g.items.filter(i=>i.done).length;
    card.innerHTML=`<div class="card-head"><b>${esc(g.category)}</b><span class="muted">${done}/${g.items.length}</span></div><div class="list"></div>`;
    const list=card.querySelector(".list");
    show.forEach(i=>{
      const row=document.createElement("label");row.className="item"+(i.done?" done":"");
-     row.innerHTML=`<input type="checkbox" data-id="${i.id}" ${i.done?"checked":""}><div><div class="iname">${esc(i.name)}</div>${i.meta?`<div class="imeta">${esc(i.meta)}</div>`:""}</div><span class="tag">${esc(i.tag||"추가")}</span>`;
+     row.innerHTML=`<input type="checkbox" data-id="${i.id}" ${i.done?"checked":""}>
+       <div><div class="iname">${esc(i.name)}</div>${i.meta?`<div class="imeta">${esc(i.meta)}</div>`:""}</div>
+       <span class="tag">${esc(i.tag||"추가")}</span>`;
      list.appendChild(row);
-   });root.appendChild(card);
+   });
+   root.appendChild(card);
  });
+ if(!visible)root.innerHTML='<div class="card" style="padding:24px;text-align:center;color:var(--sub)">조건에 맞는 준비물이 없습니다.</div>';
+
  root.querySelectorAll('input[type=checkbox]').forEach(c=>c.onchange=e=>{
-   state.packing.forEach(g=>g.items.forEach(i=>{if(i.id===e.target.dataset.id)i.done=e.target.checked;}));save();renderPacking();
+   state.packing.forEach(g=>g.items.forEach(i=>{if(i.id===e.target.dataset.id)i.done=e.target.checked;}));
+   save();renderPacking();
  });
  const all=state.packing.flatMap(g=>g.items),done=all.filter(i=>i.done).length,p=all.length?Math.round(done/all.length*100):0;
- document.getElementById("summary").textContent=`${done} / ${all.length}개 준비 완료`;document.getElementById("pct").textContent=p+"%";document.getElementById("bar").style.width=p+"%";
- const sel=document.getElementById("newCategory"),cur=sel.value;sel.innerHTML=state.packing.map((g,i)=>`<option value="${i}">${esc(g.category)}</option>`).join("");if(cur)sel.value=cur;
+ document.getElementById("summary").textContent=`${done} / ${all.length}개 준비 완료`;
+ document.getElementById("pct").textContent=p+"%";
+ document.getElementById("bar").style.width=p+"%";
+ const sel=document.getElementById("newCategory"),cur=sel.value;
+ sel.innerHTML=state.packing.map((g,i)=>`<option value="${i}">${esc(g.category)}</option>`).join("");
+ if(cur)sel.value=cur;
 }
 
 function renderSchedule(){
  const root=document.getElementById("days");root.innerHTML="";
  const start=state.departure?new Date(state.departure+"T00:00:00"):null;
+
  state.schedule.forEach((day,di)=>{
    const date=start?(()=>{const d=new Date(start);d.setDate(start.getDate()+di);return fmtDate(d)})():"날짜 미정";
-   const card=document.createElement("div");card.className="card daycard";
-   card.innerHTML=`<div class="daytop"><div><div class="dayname">${esc(day.title)}</div><div class="daydate">${date}</div></div></div><div class="events"></div><button class="add-event" data-day="${di}">+ 일정 추가</button>`;
+   const card=document.createElement("div");
+   card.className="card daycard";
+   card.style.setProperty("--day-color",day.color||"#3b82f6");
+   card.style.setProperty("--day-tint",hexToTint(day.color||"#3b82f6"));
+   card.innerHTML=`
+     <div class="daytop">
+       <div class="day-main">
+         <input class="day-title-input" type="text" value="${esc(day.title)}" data-title-day="${di}">
+         <div class="daydate">${date}</div>
+       </div>
+       <label class="colorbox">색상 <input type="color" value="${esc(day.color||"#3b82f6")}" data-day-color="${di}"></label>
+     </div>
+     <div class="events"></div>
+     <button class="add-event" data-day="${di}">+ 일정 추가</button>`;
    const evroot=card.querySelector(".events");
+
    day.events.forEach((ev,ei)=>{
      const row=document.createElement("div");row.className="event";
-     row.innerHTML=`<input type="time" value="${esc(ev.time)}" data-k="time" data-d="${di}" data-e="${ei}">
-       <div class="event-main"><input type="text" value="${esc(ev.place)}" data-k="place" data-d="${di}" data-e="${ei}" placeholder="장소/일정"><textarea data-k="note" data-d="${di}" data-e="${ei}" placeholder="메모">${esc(ev.note)}</textarea></div>
-       <button class="iconbtn" data-del="${di}:${ei}">✕</button>`;
+     row.innerHTML=`
+       <input type="time" value="${esc(ev.time)}" data-k="time" data-d="${di}" data-e="${ei}">
+       <div class="event-main">
+         <input type="text" value="${esc(ev.place)}" data-k="place" data-d="${di}" data-e="${ei}" placeholder="장소/일정">
+         <textarea data-k="note" data-d="${di}" data-e="${ei}" placeholder="메모">${esc(ev.note)}</textarea>
+         <div class="event-actions">
+           <button class="smallbtn movebtn" data-move="${di}:${ei}:-1" ${ei===0?"disabled":""}>↑ 위로</button>
+           <button class="smallbtn movebtn" data-move="${di}:${ei}:1" ${ei===day.events.length-1?"disabled":""}>↓ 아래로</button>
+           <button class="smallbtn mapbtn" data-map="${di}:${ei}">📍 지도</button>
+           <button class="smallbtn deletebtn" data-del="${di}:${ei}">✕ 삭제</button>
+         </div>
+       </div>`;
      evroot.appendChild(row);
    });
    root.appendChild(card);
  });
- root.querySelectorAll("[data-k]").forEach(el=>el.oninput=e=>{const d=+e.target.dataset.d, i=+e.target.dataset.e, k=e.target.dataset.k;state.schedule[d].events[i][k]=e.target.value;save();});
- root.querySelectorAll("[data-del]").forEach(b=>b.onclick=e=>{const [d,i]=e.target.dataset.del.split(":").map(Number);state.schedule[d].events.splice(i,1);save();renderSchedule();});
- root.querySelectorAll(".add-event").forEach(b=>b.onclick=e=>{const d=+e.target.dataset.day;state.schedule[d].events.push({time:"12:00",place:"새 일정",note:""});save();renderSchedule();});
+
+ root.querySelectorAll("[data-title-day]").forEach(el=>el.oninput=e=>{
+   state.schedule[+e.target.dataset.titleDay].title=e.target.value;save();
+ });
+ root.querySelectorAll("[data-day-color]").forEach(el=>el.oninput=e=>{
+   const d=+e.target.dataset.dayColor;
+   state.schedule[d].color=e.target.value;save();renderSchedule();
+ });
+ root.querySelectorAll("[data-k]").forEach(el=>el.oninput=e=>{
+   const d=+e.target.dataset.d,i=+e.target.dataset.e,k=e.target.dataset.k;
+   state.schedule[d].events[i][k]=e.target.value;save();
+ });
+ root.querySelectorAll("[data-move]").forEach(b=>b.onclick=e=>{
+   const [d,i,delta]=e.currentTarget.dataset.move.split(":").map(Number);
+   const arr=state.schedule[d].events,ni=i+delta;
+   if(ni<0||ni>=arr.length)return;
+   [arr[i],arr[ni]]=[arr[ni],arr[i]];
+   save();renderSchedule();
+ });
+ root.querySelectorAll("[data-map]").forEach(b=>b.onclick=e=>{
+   const [d,i]=e.currentTarget.dataset.map.split(":").map(Number);
+   openMap(state.schedule[d].events[i].place);
+ });
+ root.querySelectorAll("[data-del]").forEach(b=>b.onclick=e=>{
+   const [d,i]=e.currentTarget.dataset.del.split(":").map(Number);
+   if(confirm("이 일정을 삭제할까요?")){
+     state.schedule[d].events.splice(i,1);save();renderSchedule();
+   }
+ });
+ root.querySelectorAll(".add-event").forEach(b=>b.onclick=e=>{
+   const d=+e.currentTarget.dataset.day;
+   state.schedule[d].events.push({time:"",place:"새 일정",note:""});
+   save();renderSchedule();
+ });
 }
 
-document.getElementById("departure").onchange=e=>{state.departure=e.target.value;save();updateDate();renderSchedule();};
+function renderFlights(){
+ const root=document.getElementById("flightCards");root.innerHTML="";
+ state.flights.forEach((f,fi)=>{
+   const card=document.createElement("div");card.className="card booking-card";
+   card.innerHTML=`
+     <h3>${fi===0?"🛫":"🛬"} <input type="text" value="${esc(f.label)}" data-flight="${fi}" data-fk="label" style="width:calc(100% - 36px);font-weight:900"></h3>
+     <div class="form-grid two-col">
+       <div class="field"><label>항공사</label><input type="text" value="${esc(f.airline)}" data-flight="${fi}" data-fk="airline" placeholder="예: 대한항공"></div>
+       <div class="field"><label>편명</label><input type="text" value="${esc(f.flightNo)}" data-flight="${fi}" data-fk="flightNo" placeholder="예: KE000"></div>
+       <div class="field"><label>출발 공항</label><input type="text" value="${esc(f.from)}" data-flight="${fi}" data-fk="from"></div>
+       <div class="field"><label>도착 공항</label><input type="text" value="${esc(f.to)}" data-flight="${fi}" data-fk="to"></div>
+       <div class="field"><label>출발 일시</label><input type="datetime-local" value="${esc(f.depart)}" data-flight="${fi}" data-fk="depart"></div>
+       <div class="field"><label>도착 일시</label><input type="datetime-local" value="${esc(f.arrive)}" data-flight="${fi}" data-fk="arrive"></div>
+       <div class="field"><label>예약번호</label><input type="text" value="${esc(f.booking)}" data-flight="${fi}" data-fk="booking" placeholder="예약번호"></div>
+       <div class="field"><label>메모</label><input type="text" value="${esc(f.note)}" data-flight="${fi}" data-fk="note" placeholder="터미널, 수하물 등"></div>
+     </div>`;
+   root.appendChild(card);
+ });
+ root.querySelectorAll("[data-flight]").forEach(el=>el.oninput=e=>{
+   const i=+e.target.dataset.flight,k=e.target.dataset.fk;
+   state.flights[i][k]=e.target.value;save();
+ });
+}
+
+function renderHotels(){
+ const root=document.getElementById("hotelCards");root.innerHTML="";
+ state.hotels.forEach((h,hi)=>{
+   const card=document.createElement("div");card.className="card booking-card hotel-card";
+   card.innerHTML=`
+     <div class="hotel-title-row">
+       <strong>🏨 호텔 ${hi+1}</strong>
+       <button class="smallbtn deletebtn" data-hotel-del="${hi}">✕ 삭제</button>
+     </div>
+     <div class="form-grid two-col">
+       <div class="field"><label>도시</label><input type="text" value="${esc(h.city)}" data-hotel="${hi}" data-hk="city" placeholder="싱가포르"></div>
+       <div class="field"><label>호텔명</label><input type="text" value="${esc(h.name)}" data-hotel="${hi}" data-hk="name" placeholder="호텔명"></div>
+       <div class="field" style="grid-column:1/-1"><label>주소</label><input type="text" value="${esc(h.address)}" data-hotel="${hi}" data-hk="address" placeholder="호텔 주소"></div>
+       <div class="field"><label>체크인</label><input type="date" value="${esc(h.checkin)}" data-hotel="${hi}" data-hk="checkin"></div>
+       <div class="field"><label>체크아웃</label><input type="date" value="${esc(h.checkout)}" data-hotel="${hi}" data-hk="checkout"></div>
+       <div class="field"><label>예약번호</label><input type="text" value="${esc(h.booking)}" data-hotel="${hi}" data-hk="booking" placeholder="예약번호"></div>
+       <div class="field"><label>메모</label><input type="text" value="${esc(h.note)}" data-hotel="${hi}" data-hk="note" placeholder="조식, 체크인 메모 등"></div>
+     </div>
+     <div class="booking-actions">
+       <button class="smallbtn mapbtn" data-hotel-map="${hi}">📍 호텔 지도</button>
+     </div>`;
+   root.appendChild(card);
+ });
+ root.querySelectorAll("[data-hotel]").forEach(el=>el.oninput=e=>{
+   const i=+e.target.dataset.hotel,k=e.target.dataset.hk;
+   state.hotels[i][k]=e.target.value;save();
+ });
+ root.querySelectorAll("[data-hotel-map]").forEach(b=>b.onclick=e=>{
+   const h=state.hotels[+e.currentTarget.dataset.hotelMap];
+   openMap([h.name,h.address,h.city].filter(Boolean).join(" "));
+ });
+ root.querySelectorAll("[data-hotel-del]").forEach(b=>b.onclick=e=>{
+   const i=+e.currentTarget.dataset.hotelDel;
+   if(confirm("이 호텔 정보를 삭제할까요?")){
+     state.hotels.splice(i,1);save();renderHotels();
+   }
+ });
+}
+
+function renderBooking(){renderFlights();renderHotels();}
+
+document.getElementById("departure").onchange=e=>{
+ state.departure=e.target.value;save();updateDate();renderSchedule();
+};
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
- document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");
- document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));document.getElementById(b.dataset.page).classList.add("active");
+ document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+ b.classList.add("active");
+ document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
+ document.getElementById(b.dataset.page).classList.add("active");
 });
 document.getElementById("search").oninput=renderPacking;
-document.getElementById("pendingBtn").onclick=e=>{pending=!pending;e.target.textContent=pending?"전체 보기":"미완료만";renderPacking();};
-document.getElementById("addItemBtn").onclick=()=>{const inp=document.getElementById("newItem"),name=inp.value.trim();if(!name)return;const g=+document.getElementById("newCategory").value;state.packing[g].items.push({id:"c"+Date.now(),name,meta:"직접 추가",tag:"사용자",done:false});inp.value="";save();renderPacking();};
-document.getElementById("newItem").onkeydown=e=>{if(e.key==="Enter")document.getElementById("addItemBtn").click();};
-document.getElementById("checkAllBtn").onclick=()=>{const all=state.packing.flatMap(g=>g.items),v=!all.every(i=>i.done);state.packing.forEach(g=>g.items.forEach(i=>i.done=v));save();renderPacking();};
+document.getElementById("pendingBtn").onclick=e=>{
+ pending=!pending;e.target.textContent=pending?"전체 보기":"미완료만";renderPacking();
+};
+document.getElementById("addItemBtn").onclick=()=>{
+ const inp=document.getElementById("newItem"),name=inp.value.trim();
+ if(!name)return;
+ const g=+document.getElementById("newCategory").value;
+ state.packing[g].items.push({id:"c"+Date.now(),name,meta:"직접 추가",tag:"사용자",done:false});
+ inp.value="";save();renderPacking();
+};
+document.getElementById("newItem").onkeydown=e=>{
+ if(e.key==="Enter")document.getElementById("addItemBtn").click();
+};
+document.getElementById("addHotelBtn").onclick=()=>{
+ state.hotels.push({city:"",name:"",address:"",checkin:"",checkout:"",booking:"",note:""});
+ save();renderHotels();
+};
+document.getElementById("checkAllBtn").onclick=()=>{
+ const all=state.packing.flatMap(g=>g.items),v=!all.every(i=>i.done);
+ state.packing.forEach(g=>g.items.forEach(i=>i.done=v));save();renderPacking();
+};
 document.getElementById("copyBtn").onclick=async()=>{
  let t=["싱가포르·말레이시아 5박 7일 여행",state.departure?`출발일: ${state.departure}`:"출발일: 미정",""];
  t.push("[준비물]");
  state.packing.forEach(g=>{t.push(g.category);g.items.forEach(i=>t.push(`${i.done?"✅":"⬜"} ${i.name}`));});
  t.push("","[일정]");
- state.schedule.forEach((d,di)=>{t.push(d.title);d.events.forEach(e=>t.push(`${e.time} ${e.place}${e.note?" - "+e.note:""}`));});
- try{await navigator.clipboard.writeText(t.join("\n"));alert("여행 준비물과 일정을 복사했습니다.");}catch(e){alert("브라우저에서 복사를 허용하지 않았습니다.");}
+ state.schedule.forEach(d=>{
+   t.push(d.title);
+   d.events.forEach(e=>t.push(`${e.time||"--:--"} ${e.place}${e.note?" - "+e.note:""}`));
+ });
+ t.push("","[항공편]");
+ state.flights.forEach(f=>t.push(`${f.label}: ${f.airline} ${f.flightNo} / ${f.from} → ${f.to} / ${f.depart||""} ~ ${f.arrive||""} / 예약 ${f.booking||""}`));
+ t.push("","[호텔]");
+ state.hotels.forEach(h=>t.push(`${h.city} ${h.name} / ${h.checkin||""} ~ ${h.checkout||""} / ${h.address||""} / 예약 ${h.booking||""}`));
+ try{
+   await navigator.clipboard.writeText(t.join("\n"));
+   alert("준비물, 일정, 항공편, 호텔 정보를 복사했습니다.");
+ }catch(e){alert("브라우저에서 복사를 허용하지 않았습니다.");}
 };
-document.getElementById("resetBtn").onclick=()=>{if(confirm("여행 날짜, 준비물 체크, 수정한 일정을 모두 초기 상태로 되돌릴까요?")){state=fresh();save();updateDate();renderPacking();renderSchedule();}};
-window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;document.getElementById("installBanner").classList.add("show");});
-document.getElementById("installBtn").onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById("installBanner").classList.remove("show");};
-if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
-updateDate();renderPacking();renderSchedule();
+document.getElementById("resetBtn").onclick=()=>{
+ if(confirm("여행 날짜, 준비물 체크, 일정, 항공편, 호텔 정보를 모두 초기 상태로 되돌릴까요?")){
+   state=fresh();save();updateDate();renderPacking();renderSchedule();renderBooking();
+ }
+};
+window.addEventListener("beforeinstallprompt",e=>{
+ e.preventDefault();deferredPrompt=e;document.getElementById("installBanner").classList.add("show");
+});
+document.getElementById("installBtn").onclick=async()=>{
+ if(!deferredPrompt)return;
+ deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;
+ document.getElementById("installBanner").classList.remove("show");
+};
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
+}
+
+save();
+updateDate();
+renderPacking();
+renderSchedule();
+renderBooking();
 </script>
 </body>
 </html>
