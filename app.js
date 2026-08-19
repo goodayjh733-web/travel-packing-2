@@ -1,5 +1,5 @@
-const KEY='singmal_training_v8';
-const OLD_KEYS=['sgmy_travel_v7_full','sgmy_travel_v6_sg_day1_2','sgmy_travel_v5_malaysia_first','sgmy_travel_v3'];
+const KEY='singmal_training_v9_tts';
+const OLD_KEYS=['singmal_training_v8','sgmy_travel_v7_full','sgmy_travel_v6_sg_day1_2','sgmy_travel_v5_malaysia_first','sgmy_travel_v3'];
 const packingBase=[
  ['📄 서류·연수',[['여권','유효기간 확인','필수'],['항공권·탑승권','앱 또는 PDF 저장','필수'],['호텔 예약 확인서','오프라인 저장 권장','필수'],['연수 안내사항 서류','일정·기관 방문 안내 등','필수'],['여행자보험 정보','가입한 경우','권장'],['입국·여행 관련 확인자료','출발 직전 최신 안내 확인','확인'],['여권 사본','분실 대비','권장']]],
  ['👔 의류',[['반팔 상의','4~5장','추천'],['얇은 하의','3~4벌','추천'],['세미정장','기관 방문·연수 행사 대비','필수'],['속옷','6~7세트','5박7일'],['양말','4~6켤레','추천'],['잠옷','1벌','추천'],['얇은 겉옷','실내 냉방 대비','추천'],['모자','햇빛 대비','선택']]],
@@ -56,13 +56,85 @@ async function updateFX(force=false){const amount=parseFloat(document.getElement
 
 const bytes=s=>new TextEncoder().encode(s).length;
 async function translate(){const text=document.getElementById('translateInput').value.trim(),s=document.getElementById('sourceLang').value,t=document.getElementById('targetLang').value,out=document.getElementById('translateOutput');if(!text){out.textContent='번역 결과가 여기에 표시됩니다.';return}if(s===t){out.textContent=text;return}if(bytes(text)>480){out.textContent='짧은 문장으로 나누어 입력해주세요.';return}out.textContent='번역 중...';try{const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${s}%7C${t}&mt=1`);if(!r.ok)throw new Error('번역 서비스를 이용할 수 없습니다.');const d=await r.json(),tr=d?.responseData?.translatedText;if(!tr)throw new Error('번역 결과를 받지 못했습니다.');out.textContent=tr}catch(e){out.textContent=e.message+' 인터넷 연결을 확인해주세요.'}}
+
 function autoTranslate(){clearTimeout(translateTimer);translateTimer=setTimeout(translate,750)}
+
+const SPEECH_LANG={ko:'ko-KR',en:'en-US',ms:'ms-MY'};
+
+function stopSpeaking(){
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  const status=document.getElementById('speechStatus');
+  if(status) status.textContent='음성 재생을 정지했습니다.';
+}
+
+function chooseVoice(langCode){
+  if(!('speechSynthesis' in window)) return null;
+  const voices=window.speechSynthesis.getVoices();
+  const exact=voices.find(v=>v.lang.toLowerCase()===langCode.toLowerCase());
+  if(exact) return exact;
+  const prefix=langCode.split('-')[0].toLowerCase();
+  return voices.find(v=>v.lang.toLowerCase().startsWith(prefix))||null;
+}
+
+function speakTranslation(){
+  const out=document.getElementById('translateOutput');
+  const status=document.getElementById('speechStatus');
+  const text=(out?.textContent||'').trim();
+  const invalid=[
+    '번역 결과가 여기에 표시됩니다.',
+    '번역 중...',
+    '짧은 문장으로 나누어 입력해주세요.'
+  ];
+
+  if(!('speechSynthesis' in window)){
+    status.textContent='이 브라우저에서는 음성 읽기 기능을 사용할 수 없습니다.';
+    return;
+  }
+  if(!text || invalid.includes(text) || text.includes('인터넷 연결을 확인해주세요')){
+    status.textContent='먼저 문장을 번역해주세요.';
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const target=document.getElementById('targetLang').value;
+  const lang=SPEECH_LANG[target]||'en-US';
+  const utterance=new SpeechSynthesisUtterance(text);
+  utterance.lang=lang;
+  utterance.rate=parseFloat(document.getElementById('speechRate').value||'1');
+  utterance.pitch=1;
+  utterance.volume=1;
+
+  const voice=chooseVoice(lang);
+  if(voice) utterance.voice=voice;
+
+  utterance.onstart=()=>{
+    status.textContent=`${document.getElementById('targetLang').selectedOptions[0].text} 발음을 재생 중입니다.`;
+  };
+  utterance.onend=()=>{
+    status.textContent=voice
+      ? '음성 재생이 끝났습니다.'
+      : '음성 재생이 끝났습니다. 기기에 해당 언어 음성이 없으면 기본 음성이 사용될 수 있습니다.';
+  };
+  utterance.onerror=()=>{
+    status.textContent='음성을 재생하지 못했습니다. 휴대폰의 음성 설정을 확인해주세요.';
+  };
+
+  window.speechSynthesis.speak(utterance);
+}
+
+// 일부 모바일 브라우저는 음성 목록을 늦게 불러옵니다.
+if('speechSynthesis' in window){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+}
+
 
 // UI events
 document.getElementById('departure').onchange=e=>{state.departure=e.target.value;save();updateDate();renderSchedule()};
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(b.dataset.page).classList.add('active');if(b.dataset.page==='currency')updateFX()});
 document.getElementById('search').oninput=renderPacking;document.getElementById('pendingBtn').onclick=e=>{pending=!pending;e.target.textContent=pending?'전체 보기':'미완료만';renderPacking()};document.getElementById('addItemBtn').onclick=()=>{const inp=document.getElementById('newItem'),name=inp.value.trim();if(!name)return;state.packing[+document.getElementById('newCategory').value].items.push({id:'c'+Date.now(),name,meta:'직접 추가',tag:'사용자',done:false});inp.value='';save();renderPacking()};document.getElementById('newItem').onkeydown=e=>{if(e.key==='Enter')document.getElementById('addItemBtn').click()};document.getElementById('checkAllBtn').onclick=()=>{const all=state.packing.flatMap(g=>g.items),v=!all.every(i=>i.done);state.packing.forEach(g=>g.items.forEach(i=>i.done=v));save();renderPacking()};document.getElementById('copyBtn').onclick=async()=>{let t=['싱말연수',state.departure?`출발일: ${state.departure}`:'출발일: 미정',''];state.schedule.forEach(d=>{t.push(d.title);d.events.forEach(e=>t.push(`${e.time||'--:--'} ${e.place}${e.note?' - '+e.note:''}`));t.push('')});try{await navigator.clipboard.writeText(t.join('\n'));alert('일정을 복사했습니다.')}catch{}};document.getElementById('resetBtn').onclick=async()=>{if(confirm('출발일, 준비물 체크, 일정과 저장 사진을 모두 초기화할까요?')){state=fresh();save();try{await photoClear()}catch{}updateDate();renderPacking();renderSchedule()}};
 document.getElementById('fxAmount').oninput=()=>updateFX();document.getElementById('fxBase').onchange=()=>updateFX();document.getElementById('fxRefresh').onclick=()=>{fxCache={};updateFX(true)};
-document.getElementById('translateInput').oninput=autoTranslate;document.getElementById('sourceLang').onchange=autoTranslate;document.getElementById('targetLang').onchange=autoTranslate;document.getElementById('translateBtn').onclick=translate;document.getElementById('swapLang').onclick=()=>{const s=document.getElementById('sourceLang'),t=document.getElementById('targetLang'),v=s.value;s.value=t.value;t.value=v;autoTranslate()};document.getElementById('copyTranslation').onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById('translateOutput').textContent);alert('번역 결과를 복사했습니다.')}catch{}};document.getElementById('clearTranslation').onclick=()=>{document.getElementById('translateInput').value='';document.getElementById('translateOutput').textContent='번역 결과가 여기에 표시됩니다.'};document.querySelectorAll('.phrase').forEach(b=>b.onclick=e=>{document.getElementById('sourceLang').value='ko';document.getElementById('translateInput').value=e.currentTarget.textContent;autoTranslate()});
+document.getElementById('translateInput').oninput=()=>{stopSpeaking();autoTranslate()};document.getElementById('sourceLang').onchange=()=>{stopSpeaking();autoTranslate()};document.getElementById('targetLang').onchange=()=>{stopSpeaking();autoTranslate()};document.getElementById('translateBtn').onclick=translate;document.getElementById('speakTranslation').onclick=speakTranslation;document.getElementById('stopSpeech').onclick=stopSpeaking;document.getElementById('swapLang').onclick=()=>{stopSpeaking();const s=document.getElementById('sourceLang'),t=document.getElementById('targetLang'),v=s.value;s.value=t.value;t.value=v;autoTranslate()};document.getElementById('copyTranslation').onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById('translateOutput').textContent);alert('번역 결과를 복사했습니다.')}catch{}};document.getElementById('clearTranslation').onclick=()=>{stopSpeaking();document.getElementById('translateInput').value='';document.getElementById('translateOutput').textContent='번역 결과가 여기에 표시됩니다.';document.getElementById('speechStatus').textContent='번역된 문장을 휴대폰 음성으로 들을 수 있습니다.'};document.querySelectorAll('.phrase').forEach(b=>b.onclick=e=>{stopSpeaking();document.getElementById('sourceLang').value='ko';document.getElementById('translateInput').value=e.currentTarget.textContent;autoTranslate()});
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBanner').classList.add('show')});document.getElementById('installBtn').onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBanner').classList.remove('show')};if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js'));
 save();updateDate();renderPacking();renderSchedule();updateFX();
