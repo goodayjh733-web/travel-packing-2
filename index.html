@@ -1,655 +1,75 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f766e">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="싱말여행">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <title>싱가포르·말레이시아 5박 7일 여행</title>
-  <style>
-    :root{
-      --bg:#f5f7fb;--card:#fff;--text:#172033;--sub:#6f7c91;--line:#e5eaf0;
-      --p:#0f766e;--p2:#2563eb;--soft:#edfdf8;--danger:#dc2626;--warn:#b45309;
-      --shadow:0 10px 28px rgba(15,23,42,.08)
-    }
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;background:var(--bg);color:var(--text);
-      font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
-      padding-bottom:92px
-    }
-    .app{max-width:860px;margin:auto}
-    .hero{
-      background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;
-      padding:calc(22px + env(safe-area-inset-top)) 18px 22px;
-      border-radius:0 0 28px 28px;box-shadow:var(--shadow)
-    }
-    .mini{font-size:12px;opacity:.86;font-weight:800;letter-spacing:.04em}
-    h1{font-size:27px;line-height:1.25;margin:6px 0 14px}
-    .datebox{
-      display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end;
-      background:rgba(255,255,255,.14);padding:14px;border-radius:18px
-    }
-    .datebox label{font-size:12px;font-weight:800;display:block;margin-bottom:6px}
-    .datebox input{width:100%;border:0;border-radius:12px;padding:11px 12px;font-size:15px}
-    .dday{
-      min-width:94px;text-align:center;background:#fff;color:var(--p);
-      border-radius:16px;padding:10px 8px;font-weight:900;font-size:24px
-    }
-    .triprange{font-size:13px;opacity:.92;margin-top:10px;line-height:1.5}
-
-    .tabs{
-      position:sticky;top:0;z-index:8;display:grid;grid-template-columns:repeat(4,1fr);
-      gap:6px;padding:10px 10px;background:rgba(245,247,251,.94);backdrop-filter:blur(10px)
-    }
-    .tab{
-      border:1px solid var(--line);background:#fff;border-radius:13px;
-      padding:10px 4px;font-size:12px;font-weight:900
-    }
-    .tab.active{background:var(--p);color:#fff;border-color:var(--p)}
-    .page{display:none;padding:8px 14px 22px}
-    .page.active{display:block}
-
-    .notice{
-      background:var(--soft);border:1px solid #cbeee4;border-radius:16px;
-      padding:13px 14px;font-size:13px;line-height:1.6;margin-bottom:12px
-    }
-    .section-title{display:flex;justify-content:space-between;align-items:center;margin:14px 2px 9px}
-    .section-title h2{font-size:18px;margin:0}
-    button{
-      border:1px solid var(--line);background:#fff;color:var(--text);
-      border-radius:13px;padding:10px 12px;font-weight:850;cursor:pointer
-    }
-    button.primary{background:var(--p);color:#fff;border-color:var(--p)}
-    button.soft{background:#f8fafc}
-    button.danger{color:var(--danger)}
-    button:disabled{opacity:.35;cursor:default}
-    input,textarea,select{font:inherit;color:var(--text)}
-    input[type=text],input[type=time],input[type=date],input[type=datetime-local],textarea,select{
-      border:1px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;outline:none
-    }
-    textarea{resize:vertical}
-
-    .progresscard,.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-    .progresscard{padding:15px;margin-bottom:12px}
-    .phead{display:flex;justify-content:space-between;font-weight:900;margin-bottom:8px}
-    .track{height:10px;background:#e8edf3;border-radius:999px;overflow:hidden}
-    .bar{height:100%;width:0;background:linear-gradient(90deg,var(--p),var(--p2));transition:.2s}
-    .tools{display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:12px}
-    .tools input{width:100%;border:1px solid var(--line);border-radius:13px;padding:12px}
-    .cards{display:grid;gap:11px}
-    .card-head{display:flex;justify-content:space-between;align-items:center;padding:14px 15px;border-bottom:1px solid var(--line)}
-    .card-head b{font-size:16px}
-    .muted{font-size:12px;color:var(--sub)}
-    .item{display:grid;grid-template-columns:27px 1fr auto;gap:10px;align-items:center;padding:12px 13px;border-bottom:1px dashed var(--line)}
-    .item:last-child{border-bottom:0}
-    .item input[type=checkbox]{width:21px;height:21px;accent-color:var(--p)}
-    .item.done .iname{text-decoration:line-through;color:#9aa3af}
-    .iname{font-size:14px;font-weight:850}
-    .imeta{font-size:11px;color:var(--sub);margin-top:3px}
-    .tag{font-size:10px;padding:5px 7px;border-radius:999px;background:#eef2ff;color:#3949ab;font-weight:800;white-space:nowrap}
-    .addbox{display:grid;grid-template-columns:1fr;gap:8px;padding:14px;margin-top:12px}
-
-    /* Schedule */
-    .daycard{
-      padding:0;margin-bottom:14px;overflow:hidden;
-      border-left:8px solid var(--day-color,#dbeafe);
-      background:linear-gradient(90deg,var(--day-tint,#eff6ff),#fff 35%)
-    }
-    .daytop{display:flex;gap:8px;align-items:flex-start;padding:14px 14px 10px}
-    .day-main{flex:1;min-width:0}
-    .day-title-input{
-      width:100%;font-weight:950;font-size:16px;border:1px solid var(--line);
-      border-radius:10px;padding:8px 9px;background:rgba(255,255,255,.92)
-    }
-    .daydate{font-size:12px;color:var(--sub);margin-top:5px;font-weight:800}
-    .colorbox{
-      display:flex;align-items:center;gap:5px;padding-top:2px;
-      font-size:11px;color:var(--sub);white-space:nowrap
-    }
-    .colorbox input[type=color]{
-      width:34px;height:34px;padding:2px;border:1px solid var(--line);
-      background:#fff;border-radius:10px
-    }
-    .events{padding:0 12px}
-    .event{
-      display:grid;grid-template-columns:72px 1fr;gap:8px;align-items:start;
-      padding:12px 2px;border-top:1px dashed #d8dee7
-    }
-    .event:first-child{border-top:0}
-    .event input[type=time]{width:72px;padding:8px 6px;font-size:12px}
-    .event-main input{width:100%;margin-bottom:6px}
-    .event-main textarea{width:100%;min-height:58px;font-size:13px;margin-bottom:7px}
-    .event-actions{display:flex;gap:6px;flex-wrap:wrap}
-    .smallbtn{padding:7px 9px;border-radius:10px;font-size:12px}
-    .mapbtn{color:#1d4ed8}
-    .movebtn{color:#334155}
-    .deletebtn{color:var(--danger)}
-    .add-event{width:calc(100% - 24px);margin:0 12px 13px}
-
-    /* Reservations */
-    .booking-grid{display:grid;gap:12px}
-    .booking-card{padding:14px}
-    .booking-card h3{font-size:16px;margin:0 0 11px}
-    .form-grid{display:grid;grid-template-columns:1fr;gap:8px}
-    .field label{display:block;font-size:11px;font-weight:850;color:var(--sub);margin:0 0 5px 3px}
-    .field input,.field textarea,.field select{width:100%}
-    .field textarea{min-height:62px}
-    .two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-    .booking-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
-    .hotel-card{position:relative}
-    .hotel-title-row{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:10px}
-    .hotel-title-row strong{font-size:15px}
-    .add-hotel{width:100%;margin-top:12px}
-
-    .info-grid{display:grid;gap:11px}
-    .info-card{padding:15px}
-    .info-card h3{margin:0 0 7px;font-size:16px}
-    .info-card p{margin:0;font-size:13px;line-height:1.65;color:#49566a}
-
-    .bottom{
-      position:fixed;left:0;right:0;bottom:0;z-index:10;background:rgba(255,255,255,.96);
-      border-top:1px solid var(--line);backdrop-filter:blur(10px);
-      padding:9px 12px calc(9px + env(safe-area-inset-bottom))
-    }
-    .bottom-inner{max-width:860px;margin:auto;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
-    .bottom button{font-size:12px;padding:9px 6px}
-    .install{
-      display:none;margin:12px 14px 0;padding:12px 13px;background:#fff;border:1px solid var(--line);
-      border-radius:16px;box-shadow:var(--shadow);align-items:center;justify-content:space-between;gap:9px
-    }
-    .install.show{display:flex}
-
-    @media(min-width:650px){
-      .app{padding:0 10px}.hero{margin-top:15px;border-radius:28px}
-      .addbox{grid-template-columns:1fr 190px auto}
-      .info-grid{grid-template-columns:1fr 1fr}
-      .booking-grid{grid-template-columns:1fr 1fr}
-      .form-grid.two-col{grid-template-columns:1fr 1fr}
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="싱말연수">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css">
+<title>싱말연수</title>
 </head>
 <body>
-<div class="app">
+<main class="app">
   <header class="hero">
-    <div class="mini">SINGAPORE + MALAYSIA · 5박 7일</div>
-    <h1>✈️ 나의 여행 준비 앱</h1>
+    <div class="mini">SINGAPORE + MALAYSIA · 연수 & 여행</div>
+    <h1>🌏 싱말연수</h1>
     <div class="datebox">
-      <div>
-        <label for="departure">출발일</label>
-        <input id="departure" type="date">
-      </div>
-      <div class="dday" id="dday">D-?</div>
+      <div><label for="departure">출발일</label><input id="departure" type="date"></div>
+      <div id="dday" class="dday">D-?</div>
     </div>
-    <div class="triprange" id="triprange">출발일을 입력하면 7일 일정 날짜가 자동으로 표시됩니다.</div>
+    <div id="triprange" class="triprange">출발일을 입력하면 7일 일정 날짜가 자동으로 표시됩니다.</div>
   </header>
 
-  <div class="install" id="installBanner">
-    <div style="font-size:13px;line-height:1.45"><b>📱 앱처럼 설치하기</b><br>홈 화면에서 바로 실행할 수 있어요.</div>
-    <button class="primary" id="installBtn">설치</button>
-  </div>
+  <div id="installBanner" class="install"><span><b>📱 앱으로 설치</b><br>홈 화면에서 바로 실행할 수 있어요.</span><button id="installBtn" class="primary">설치</button></div>
 
   <nav class="tabs">
     <button class="tab active" data-page="packing">🧳 준비물</button>
-    <button class="tab" data-page="schedule">🗓️ 일정</button>
-    <button class="tab" data-page="booking">✈️ 예약</button>
-    <button class="tab" data-page="info">ℹ️ 정보</button>
+    <button class="tab" data-page="schedule">🗓 일정</button>
+    <button class="tab" data-page="currency">💱 환율</button>
+    <button class="tab" data-page="translator">🌐 번역</button>
   </nav>
 
-  <section class="page active" id="packing">
-    <div class="notice">체크 상태와 여행 날짜는 이 기기에 자동 저장됩니다. 기존 버전에 저장된 출발일과 준비물 체크도 가능한 경우 자동으로 이어받습니다.</div>
-    <div class="progresscard">
-      <div class="phead"><span id="summary">0 / 0개 준비 완료</span><span id="pct">0%</span></div>
-      <div class="track"><div class="bar" id="bar"></div></div>
-    </div>
-    <div class="tools">
-      <input id="search" type="text" placeholder="준비물 검색">
-      <button id="pendingBtn">미완료만</button>
-    </div>
-    <div id="packingCards" class="cards"></div>
-    <div class="card addbox">
-      <input id="newItem" type="text" placeholder="예: 선글라스">
-      <select id="newCategory"></select>
-      <button class="primary" id="addItemBtn">준비물 추가</button>
-    </div>
+  <section id="packing" class="page active">
+    <div class="notice">연수 안내사항 서류, 세미정장, 메모지를 포함했습니다. 수영복은 제외했습니다. 체크 상태는 자동 저장됩니다.</div>
+    <div class="progress card"><div class="progress-head"><b id="summary">0 / 0개</b><b id="pct">0%</b></div><div class="track"><div id="bar" class="bar"></div></div></div>
+    <div class="tools"><input id="search" type="text" placeholder="준비물 검색"><button id="pendingBtn">미완료만</button></div>
+    <div id="packingCards" class="stack"></div>
+    <div class="card addbox"><input id="newItem" type="text" placeholder="준비물 직접 추가"><select id="newCategory"></select><button id="addItemBtn" class="primary">추가</button></div>
   </section>
 
-  <section class="page" id="schedule">
-    <div class="notice">
-      DAY 제목·시간·장소·메모를 모두 직접 수정할 수 있습니다.
-      각 일정의 <b>↑ ↓</b> 버튼으로 순서를 바꾸고, <b>지도</b>를 누르면 입력한 장소를 지도에서 검색합니다.
-      색상 버튼으로 하루별 색상도 바꿀 수 있습니다.
-    </div>
+  <section id="schedule" class="page">
+    <div class="notice">DAY 제목·시간·장소·메모를 직접 수정할 수 있습니다. ↑ ↓로 순서를 바꾸고, 지도 검색과 방문 사진 저장도 가능합니다.</div>
     <div id="days"></div>
   </section>
 
-  <section class="page" id="booking">
-    <div class="notice">항공편과 호텔 정보를 입력하면 자동 저장됩니다. 호텔의 지도 버튼은 호텔명/주소를 이용해 지도를 엽니다.</div>
-
-    <div class="section-title"><h2>✈️ 항공편</h2></div>
-    <div id="flightCards" class="booking-grid"></div>
-
-    <div class="section-title"><h2>🏨 호텔</h2></div>
-    <div id="hotelCards" class="booking-grid"></div>
-    <button class="primary add-hotel" id="addHotelBtn">+ 호텔 추가</button>
-  </section>
-
-  <section class="page" id="info">
-    <div class="info-grid">
-      <div class="card info-card"><h3>🌦️ 날씨 대비</h3><p>덥고 습한 날씨와 갑작스러운 비를 고려해 얇은 옷, 우산·우비, 편한 신발을 준비하세요.</p></div>
-      <div class="card info-card"><h3>🔌 전자기기</h3><p>여행용 어댑터와 충전기를 준비하고, 보조배터리는 이용 항공사의 기내 반입 규정을 출발 전에 확인하세요.</p></div>
-      <div class="card info-card"><h3>💳 결제</h3><p>해외 결제 가능한 카드와 소액 현금을 나누어 보관하면 편리합니다.</p></div>
-      <div class="card info-card"><h3>📄 입국·예약</h3><p>여권, 항공권, 숙소 예약, 입국 관련 안내는 출발 직전에 공식 안내에서 다시 확인하는 것을 권장합니다.</p></div>
+  <section id="currency" class="page">
+    <div class="notice">금액과 기준 통화를 선택하면 한국 원·미국 달러·싱가포르 달러·말레이시아 링깃을 동시에 계산합니다.</div>
+    <div class="card fxbox">
+      <div class="fxinput"><input id="fxAmount" type="number" min="0" step="any" inputmode="decimal" value="100"><select id="fxBase"><option value="KRW">대한민국 원 KRW</option><option value="USD">미국 달러 USD</option><option value="SGD">싱가포르 달러 SGD</option><option value="MYR">말레이시아 링깃 MYR</option></select></div>
+      <div id="fxResults" class="fxgrid"></div>
+      <div id="fxStatus" class="status">환율을 불러오는 중...</div>
+      <button id="fxRefresh" class="wide">↻ 최신 환율 다시 불러오기</button>
     </div>
   </section>
-</div>
 
-<nav class="bottom">
-  <div class="bottom-inner">
-    <button id="checkAllBtn">✓ 전체 체크</button>
-    <button id="copyBtn">📋 전체 복사</button>
-    <button class="danger" id="resetBtn">↺ 초기화</button>
-  </div>
-</nav>
+  <section id="translator" class="page">
+    <div class="notice">한국어·영어·말레이어 사이에서 짧은 연수·여행 문장을 자동 번역합니다. 입력 후 잠시 기다리면 번역됩니다.</div>
+    <div class="card translatebox">
+      <div class="langrow"><select id="sourceLang"><option value="ko">한국어</option><option value="en">English</option><option value="ms">Bahasa Melayu</option></select><button id="swapLang">⇄</button><select id="targetLang"><option value="en">English</option><option value="ms">Bahasa Melayu</option><option value="ko">한국어</option></select></div>
+      <textarea id="translateInput" placeholder="예: 연수 장소가 어디인가요?"></textarea>
+      <div id="translateOutput" class="translation">번역 결과가 여기에 표시됩니다.</div>
+      <div class="actions"><button id="translateBtn" class="primary">번역하기</button><button id="copyTranslation">복사</button><button id="clearTranslation">지우기</button></div>
+      <h3>자주 쓰는 표현</h3>
+      <div class="phrases"><button class="phrase">안녕하세요. 만나서 반갑습니다.</button><button class="phrase">연수 장소가 어디인가요?</button><button class="phrase">사진을 찍어도 될까요?</button><button class="phrase">도와주셔서 감사합니다.</button><button class="phrase">화장실이 어디인가요?</button><button class="phrase">이곳까지 어떻게 가나요?</button></div>
+      <p class="small">자동 번역은 인터넷 연결이 필요합니다. 중요한 공식 표현은 최종 확인을 권장합니다.</p>
+    </div>
+  </section>
+</main>
 
-<script>
-const KEY="sgmy_travel_v7_full";
-const PREVIOUS_KEYS=["sgmy_travel_v6_sg_day1_2","sgmy_travel_v5_malaysia_first","sgmy_travel_v3"];
-
-const packingBase=[
- ["📄 서류·예약",[["여권","유효기간 확인","필수"],["항공권·탑승권","앱 또는 PDF 저장","필수"],["호텔 예약 확인서","오프라인 저장 권장","필수"],["여행자보험 정보","가입한 경우","권장"],["입국·여행 관련 확인자료","출발 직전 최신 안내 확인","확인"],["여권 사본","분실 대비","권장"]]],
- ["👕 의류",[["반팔 상의","5~6장","5박7일"],["얇은 하의","3~4벌","추천"],["속옷","6~7세트","5박7일"],["양말","4~6켤레","추천"],["잠옷","1벌","추천"],["얇은 겉옷","실내 냉방 대비","추천"],["모자","햇빛 대비","추천"],["수영복","호텔 수영장 이용 시","선택"]]],
- ["👟 신발·가방",[["편한 운동화","도보 이동용","추천"],["샌들 또는 슬리퍼","비·수영장 대비","추천"],["작은 크로스백","여권·휴대폰 보관","추천"],["접이식 보조가방","귀국 짐 증가 대비","추천"]]],
- ["🧴 세면·위생",[["칫솔·치약","","기본"],["세안용품","","기본"],["기초 화장품","소용량 권장","기본"],["선크림","야외활동 대비","추천"],["물티슈·티슈","","추천"],["개인 위생용품","필요에 따라","선택"]]],
- ["🌧️ 날씨 대비",[["접이식 우산","갑작스러운 비 대비","추천"],["얇은 우비","야외 일정이 많다면","선택"],["작은 수건","땀·비 대비","추천"],["방수 파우치","전자기기 보호","추천"]]],
- ["🔌 전자기기",[["휴대폰","","필수"],["충전기","","필수"],["보조배터리","항공사 규정 확인","추천"],["멀티 충전 케이블","","추천"],["여행용 어댑터","숙소 콘센트 확인","추천"],["이어폰","","선택"]]],
- ["💳 돈·결제",[["해외 결제 가능 카드","해외사용 설정 확인","필수"],["소액 현금","교통·소규모 결제 대비","추천"],["예비 카드","별도 보관","권장"]]],
- ["💊 건강·개인용품",[["개인 복용약","필요한 경우","필수"],["기본 상비용품","개인에게 필요한 범위","권장"],["안경·렌즈","사용하는 경우","필수"],["마스크","필요 시","선택"]]],
- ["🎒 기내·이동",[["목베개","장거리 이동 시","선택"],["가벼운 겉옷","기내 냉방 대비","추천"],["볼펜","서류 작성 대비","추천"],["간단한 간식","필요 시","선택"]]]
-];
-
-const scheduleBase=[
- {title:"DAY 1 · 싱가포르 도착",color:"#3b82f6",events:[
-   {time:"",place:"인천국제공항",note:"출국 준비 및 탑승"},
-   {time:"",place:"싱가포르 창이공항",note:"싱가포르 도착"},
-   {time:"",place:"싱가포르 호텔",note:"호텔 이동 및 체크인"}
- ]},
- {title:"DAY 2 · 싱가포르",color:"#06b6d4",events:[
-   {time:"",place:"싱가포르 오전 일정",note:"장소와 시간을 직접 입력"},
-   {time:"",place:"싱가포르 오후 일정",note:"장소와 시간을 직접 입력"},
-   {time:"",place:"싱가포르 저녁 일정",note:"장소와 시간을 직접 입력"}
- ]},
- {title:"DAY 3 · 싱가포르 / 조호바루",color:"#14b8a6",events:[
-   {time:"",place:"싱가포르",note:"오전 일정 또는 체크아웃"},
-   {time:"",place:"조호바루",note:"국경 이동 및 도착"},
-   {time:"",place:"조호바루 호텔",note:"체크인 및 저녁 일정"}
- ]},
- {title:"DAY 4 · 조호바루 / 말라카 / 쿠알라룸푸르",color:"#22c55e",events:[
-   {time:"",place:"조호바루",note:"출발"},
-   {time:"",place:"말라카",note:"관광 및 식사"},
-   {time:"",place:"쿠알라룸푸르",note:"이동 및 호텔 체크인"}
- ]},
- {title:"DAY 5 · 쿠알라룸푸르",color:"#eab308",events:[
-   {time:"",place:"쿠알라룸푸르 오전 일정",note:"장소와 시간을 직접 입력"},
-   {time:"",place:"쿠알라룸푸르 오후 일정",note:"장소와 시간을 직접 입력"},
-   {time:"",place:"쿠알라룸푸르 저녁 일정",note:"장소와 시간을 직접 입력"}
- ]},
- {title:"DAY 6 · 쿠알라룸푸르 / 인천",color:"#f97316",events:[
-   {time:"",place:"쿠알라룸푸르",note:"귀국 전 일정 및 체크아웃"},
-   {time:"",place:"쿠알라룸푸르 국제공항",note:"공항 이동 및 출국"},
-   {time:"",place:"인천국제공항",note:"귀국편 도착 예정"}
- ]},
- {title:"DAY 7 · 인천",color:"#a855f7",events:[
-   {time:"",place:"인천국제공항",note:"입국 및 수하물 수령"},
-   {time:"",place:"귀가",note:"집으로 이동"}
- ]}
-];
-
-const flightBase=[
- {label:"가는 항공편",airline:"",flightNo:"",from:"인천국제공항",to:"싱가포르 창이공항",depart:"",arrive:"",booking:"",note:""},
- {label:"오는 항공편",airline:"",flightNo:"",from:"쿠알라룸푸르 국제공항",to:"인천국제공항",depart:"",arrive:"",booking:"",note:""}
-];
-
-const hotelBase=[
- {city:"싱가포르",name:"",address:"",checkin:"",checkout:"",booking:"",note:""},
- {city:"조호바루",name:"",address:"",checkin:"",checkout:"",booking:"",note:""},
- {city:"쿠알라룸푸르",name:"",address:"",checkin:"",checkout:"",booking:"",note:""}
-];
-
-function makePacking(){
- let n=0;
- return packingBase.map(([category,items])=>({
-   category,
-   items:items.map(([name,meta,tag])=>({id:"p"+(++n),name,meta,tag,done:false}))
- }));
-}
-function fresh(){
- return {
-   departure:"",
-   packing:makePacking(),
-   schedule:JSON.parse(JSON.stringify(scheduleBase)),
-   flights:JSON.parse(JSON.stringify(flightBase)),
-   hotels:JSON.parse(JSON.stringify(hotelBase))
- };
-}
-function migratePrevious(base){
- for(const key of PREVIOUS_KEYS){
-   try{
-     const old=JSON.parse(localStorage.getItem(key));
-     if(!old) continue;
-     if(old.departure) base.departure=old.departure;
-     if(Array.isArray(old.packing)){
-       const doneMap=new Map();
-       old.packing.forEach(g=>g.items?.forEach(i=>doneMap.set(i.name,!!i.done)));
-       base.packing.forEach(g=>g.items.forEach(i=>{
-         if(doneMap.has(i.name)) i.done=doneMap.get(i.name);
-       }));
-     }
-     return base;
-   }catch(e){}
- }
- return base;
-}
-function loadState(){
- try{
-   const x=JSON.parse(localStorage.getItem(KEY));
-   if(x&&x.packing&&x.schedule){
-     if(!x.flights)x.flights=JSON.parse(JSON.stringify(flightBase));
-     if(!x.hotels)x.hotels=JSON.parse(JSON.stringify(hotelBase));
-     x.schedule.forEach((d,i)=>{if(!d.color)d.color=scheduleBase[i]?.color||"#3b82f6";});
-     return x;
-   }
- }catch(e){}
- return migratePrevious(fresh());
-}
-let state=loadState();
-let pending=false, deferredPrompt=null;
-
-function save(){localStorage.setItem(KEY,JSON.stringify(state));}
-function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));}
-function fmtDate(date){return `${date.getMonth()+1}/${date.getDate()} (${["일","월","화","수","목","금","토"][date.getDay()]})`;}
-function hexToTint(hex){
- let h=String(hex||"#3b82f6").replace("#","");
- if(h.length===3)h=h.split("").map(x=>x+x).join("");
- const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
- return `rgba(${r},${g},${b},0.09)`;
-}
-function openMap(query){
- const q=String(query||"").trim();
- if(!q){alert("먼저 장소 또는 주소를 입력해주세요.");return;}
- window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(q),"_blank","noopener");
-}
-
-function updateDate(){
- const dep=document.getElementById("departure");
- dep.value=state.departure||"";
- const dday=document.getElementById("dday"),range=document.getElementById("triprange");
- if(!state.departure){
-   dday.textContent="D-?";
-   range.textContent="출발일을 입력하면 7일 일정 날짜가 자동으로 표시됩니다.";
-   return;
- }
- const start=new Date(state.departure+"T00:00:00");
- const today=new Date();today.setHours(0,0,0,0);
- const diff=Math.round((start-today)/86400000);
- dday.textContent=diff>0?`D-${diff}`:diff===0?"D-DAY":`D+${Math.abs(diff)}`;
- const end=new Date(start);end.setDate(start.getDate()+6);
- range.textContent=`여행 기간: ${fmtDate(start)} ~ ${fmtDate(end)} · 5박 7일`;
-}
-
-function renderPacking(){
- const q=document.getElementById("search").value.trim().toLowerCase();
- const root=document.getElementById("packingCards");root.innerHTML="";
- let visible=0;
- state.packing.forEach(g=>{
-   const show=g.items.filter(i=>(i.name+" "+i.meta+" "+i.tag).toLowerCase().includes(q)&&(!pending||!i.done));
-   if(!show.length)return;
-   visible+=show.length;
-   const card=document.createElement("div");card.className="card";
-   const done=g.items.filter(i=>i.done).length;
-   card.innerHTML=`<div class="card-head"><b>${esc(g.category)}</b><span class="muted">${done}/${g.items.length}</span></div><div class="list"></div>`;
-   const list=card.querySelector(".list");
-   show.forEach(i=>{
-     const row=document.createElement("label");row.className="item"+(i.done?" done":"");
-     row.innerHTML=`<input type="checkbox" data-id="${i.id}" ${i.done?"checked":""}>
-       <div><div class="iname">${esc(i.name)}</div>${i.meta?`<div class="imeta">${esc(i.meta)}</div>`:""}</div>
-       <span class="tag">${esc(i.tag||"추가")}</span>`;
-     list.appendChild(row);
-   });
-   root.appendChild(card);
- });
- if(!visible)root.innerHTML='<div class="card" style="padding:24px;text-align:center;color:var(--sub)">조건에 맞는 준비물이 없습니다.</div>';
-
- root.querySelectorAll('input[type=checkbox]').forEach(c=>c.onchange=e=>{
-   state.packing.forEach(g=>g.items.forEach(i=>{if(i.id===e.target.dataset.id)i.done=e.target.checked;}));
-   save();renderPacking();
- });
- const all=state.packing.flatMap(g=>g.items),done=all.filter(i=>i.done).length,p=all.length?Math.round(done/all.length*100):0;
- document.getElementById("summary").textContent=`${done} / ${all.length}개 준비 완료`;
- document.getElementById("pct").textContent=p+"%";
- document.getElementById("bar").style.width=p+"%";
- const sel=document.getElementById("newCategory"),cur=sel.value;
- sel.innerHTML=state.packing.map((g,i)=>`<option value="${i}">${esc(g.category)}</option>`).join("");
- if(cur)sel.value=cur;
-}
-
-function renderSchedule(){
- const root=document.getElementById("days");root.innerHTML="";
- const start=state.departure?new Date(state.departure+"T00:00:00"):null;
-
- state.schedule.forEach((day,di)=>{
-   const date=start?(()=>{const d=new Date(start);d.setDate(start.getDate()+di);return fmtDate(d)})():"날짜 미정";
-   const card=document.createElement("div");
-   card.className="card daycard";
-   card.style.setProperty("--day-color",day.color||"#3b82f6");
-   card.style.setProperty("--day-tint",hexToTint(day.color||"#3b82f6"));
-   card.innerHTML=`
-     <div class="daytop">
-       <div class="day-main">
-         <input class="day-title-input" type="text" value="${esc(day.title)}" data-title-day="${di}">
-         <div class="daydate">${date}</div>
-       </div>
-       <label class="colorbox">색상 <input type="color" value="${esc(day.color||"#3b82f6")}" data-day-color="${di}"></label>
-     </div>
-     <div class="events"></div>
-     <button class="add-event" data-day="${di}">+ 일정 추가</button>`;
-   const evroot=card.querySelector(".events");
-
-   day.events.forEach((ev,ei)=>{
-     const row=document.createElement("div");row.className="event";
-     row.innerHTML=`
-       <input type="time" value="${esc(ev.time)}" data-k="time" data-d="${di}" data-e="${ei}">
-       <div class="event-main">
-         <input type="text" value="${esc(ev.place)}" data-k="place" data-d="${di}" data-e="${ei}" placeholder="장소/일정">
-         <textarea data-k="note" data-d="${di}" data-e="${ei}" placeholder="메모">${esc(ev.note)}</textarea>
-         <div class="event-actions">
-           <button class="smallbtn movebtn" data-move="${di}:${ei}:-1" ${ei===0?"disabled":""}>↑ 위로</button>
-           <button class="smallbtn movebtn" data-move="${di}:${ei}:1" ${ei===day.events.length-1?"disabled":""}>↓ 아래로</button>
-           <button class="smallbtn mapbtn" data-map="${di}:${ei}">📍 지도</button>
-           <button class="smallbtn deletebtn" data-del="${di}:${ei}">✕ 삭제</button>
-         </div>
-       </div>`;
-     evroot.appendChild(row);
-   });
-   root.appendChild(card);
- });
-
- root.querySelectorAll("[data-title-day]").forEach(el=>el.oninput=e=>{
-   state.schedule[+e.target.dataset.titleDay].title=e.target.value;save();
- });
- root.querySelectorAll("[data-day-color]").forEach(el=>el.oninput=e=>{
-   const d=+e.target.dataset.dayColor;
-   state.schedule[d].color=e.target.value;save();renderSchedule();
- });
- root.querySelectorAll("[data-k]").forEach(el=>el.oninput=e=>{
-   const d=+e.target.dataset.d,i=+e.target.dataset.e,k=e.target.dataset.k;
-   state.schedule[d].events[i][k]=e.target.value;save();
- });
- root.querySelectorAll("[data-move]").forEach(b=>b.onclick=e=>{
-   const [d,i,delta]=e.currentTarget.dataset.move.split(":").map(Number);
-   const arr=state.schedule[d].events,ni=i+delta;
-   if(ni<0||ni>=arr.length)return;
-   [arr[i],arr[ni]]=[arr[ni],arr[i]];
-   save();renderSchedule();
- });
- root.querySelectorAll("[data-map]").forEach(b=>b.onclick=e=>{
-   const [d,i]=e.currentTarget.dataset.map.split(":").map(Number);
-   openMap(state.schedule[d].events[i].place);
- });
- root.querySelectorAll("[data-del]").forEach(b=>b.onclick=e=>{
-   const [d,i]=e.currentTarget.dataset.del.split(":").map(Number);
-   if(confirm("이 일정을 삭제할까요?")){
-     state.schedule[d].events.splice(i,1);save();renderSchedule();
-   }
- });
- root.querySelectorAll(".add-event").forEach(b=>b.onclick=e=>{
-   const d=+e.currentTarget.dataset.day;
-   state.schedule[d].events.push({time:"",place:"새 일정",note:""});
-   save();renderSchedule();
- });
-}
-
-function renderFlights(){
- const root=document.getElementById("flightCards");root.innerHTML="";
- state.flights.forEach((f,fi)=>{
-   const card=document.createElement("div");card.className="card booking-card";
-   card.innerHTML=`
-     <h3>${fi===0?"🛫":"🛬"} <input type="text" value="${esc(f.label)}" data-flight="${fi}" data-fk="label" style="width:calc(100% - 36px);font-weight:900"></h3>
-     <div class="form-grid two-col">
-       <div class="field"><label>항공사</label><input type="text" value="${esc(f.airline)}" data-flight="${fi}" data-fk="airline" placeholder="예: 대한항공"></div>
-       <div class="field"><label>편명</label><input type="text" value="${esc(f.flightNo)}" data-flight="${fi}" data-fk="flightNo" placeholder="예: KE000"></div>
-       <div class="field"><label>출발 공항</label><input type="text" value="${esc(f.from)}" data-flight="${fi}" data-fk="from"></div>
-       <div class="field"><label>도착 공항</label><input type="text" value="${esc(f.to)}" data-flight="${fi}" data-fk="to"></div>
-       <div class="field"><label>출발 일시</label><input type="datetime-local" value="${esc(f.depart)}" data-flight="${fi}" data-fk="depart"></div>
-       <div class="field"><label>도착 일시</label><input type="datetime-local" value="${esc(f.arrive)}" data-flight="${fi}" data-fk="arrive"></div>
-       <div class="field"><label>예약번호</label><input type="text" value="${esc(f.booking)}" data-flight="${fi}" data-fk="booking" placeholder="예약번호"></div>
-       <div class="field"><label>메모</label><input type="text" value="${esc(f.note)}" data-flight="${fi}" data-fk="note" placeholder="터미널, 수하물 등"></div>
-     </div>`;
-   root.appendChild(card);
- });
- root.querySelectorAll("[data-flight]").forEach(el=>el.oninput=e=>{
-   const i=+e.target.dataset.flight,k=e.target.dataset.fk;
-   state.flights[i][k]=e.target.value;save();
- });
-}
-
-function renderHotels(){
- const root=document.getElementById("hotelCards");root.innerHTML="";
- state.hotels.forEach((h,hi)=>{
-   const card=document.createElement("div");card.className="card booking-card hotel-card";
-   card.innerHTML=`
-     <div class="hotel-title-row">
-       <strong>🏨 호텔 ${hi+1}</strong>
-       <button class="smallbtn deletebtn" data-hotel-del="${hi}">✕ 삭제</button>
-     </div>
-     <div class="form-grid two-col">
-       <div class="field"><label>도시</label><input type="text" value="${esc(h.city)}" data-hotel="${hi}" data-hk="city" placeholder="싱가포르"></div>
-       <div class="field"><label>호텔명</label><input type="text" value="${esc(h.name)}" data-hotel="${hi}" data-hk="name" placeholder="호텔명"></div>
-       <div class="field" style="grid-column:1/-1"><label>주소</label><input type="text" value="${esc(h.address)}" data-hotel="${hi}" data-hk="address" placeholder="호텔 주소"></div>
-       <div class="field"><label>체크인</label><input type="date" value="${esc(h.checkin)}" data-hotel="${hi}" data-hk="checkin"></div>
-       <div class="field"><label>체크아웃</label><input type="date" value="${esc(h.checkout)}" data-hotel="${hi}" data-hk="checkout"></div>
-       <div class="field"><label>예약번호</label><input type="text" value="${esc(h.booking)}" data-hotel="${hi}" data-hk="booking" placeholder="예약번호"></div>
-       <div class="field"><label>메모</label><input type="text" value="${esc(h.note)}" data-hotel="${hi}" data-hk="note" placeholder="조식, 체크인 메모 등"></div>
-     </div>
-     <div class="booking-actions">
-       <button class="smallbtn mapbtn" data-hotel-map="${hi}">📍 호텔 지도</button>
-     </div>`;
-   root.appendChild(card);
- });
- root.querySelectorAll("[data-hotel]").forEach(el=>el.oninput=e=>{
-   const i=+e.target.dataset.hotel,k=e.target.dataset.hk;
-   state.hotels[i][k]=e.target.value;save();
- });
- root.querySelectorAll("[data-hotel-map]").forEach(b=>b.onclick=e=>{
-   const h=state.hotels[+e.currentTarget.dataset.hotelMap];
-   openMap([h.name,h.address,h.city].filter(Boolean).join(" "));
- });
- root.querySelectorAll("[data-hotel-del]").forEach(b=>b.onclick=e=>{
-   const i=+e.currentTarget.dataset.hotelDel;
-   if(confirm("이 호텔 정보를 삭제할까요?")){
-     state.hotels.splice(i,1);save();renderHotels();
-   }
- });
-}
-
-function renderBooking(){renderFlights();renderHotels();}
-
-document.getElementById("departure").onchange=e=>{
- state.departure=e.target.value;save();updateDate();renderSchedule();
-};
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{
- document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
- b.classList.add("active");
- document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));
- document.getElementById(b.dataset.page).classList.add("active");
-});
-document.getElementById("search").oninput=renderPacking;
-document.getElementById("pendingBtn").onclick=e=>{
- pending=!pending;e.target.textContent=pending?"전체 보기":"미완료만";renderPacking();
-};
-document.getElementById("addItemBtn").onclick=()=>{
- const inp=document.getElementById("newItem"),name=inp.value.trim();
- if(!name)return;
- const g=+document.getElementById("newCategory").value;
- state.packing[g].items.push({id:"c"+Date.now(),name,meta:"직접 추가",tag:"사용자",done:false});
- inp.value="";save();renderPacking();
-};
-document.getElementById("newItem").onkeydown=e=>{
- if(e.key==="Enter")document.getElementById("addItemBtn").click();
-};
-document.getElementById("addHotelBtn").onclick=()=>{
- state.hotels.push({city:"",name:"",address:"",checkin:"",checkout:"",booking:"",note:""});
- save();renderHotels();
-};
-document.getElementById("checkAllBtn").onclick=()=>{
- const all=state.packing.flatMap(g=>g.items),v=!all.every(i=>i.done);
- state.packing.forEach(g=>g.items.forEach(i=>i.done=v));save();renderPacking();
-};
-document.getElementById("copyBtn").onclick=async()=>{
- let t=["싱가포르·말레이시아 5박 7일 여행",state.departure?`출발일: ${state.departure}`:"출발일: 미정",""];
- t.push("[준비물]");
- state.packing.forEach(g=>{t.push(g.category);g.items.forEach(i=>t.push(`${i.done?"✅":"⬜"} ${i.name}`));});
- t.push("","[일정]");
- state.schedule.forEach(d=>{
-   t.push(d.title);
-   d.events.forEach(e=>t.push(`${e.time||"--:--"} ${e.place}${e.note?" - "+e.note:""}`));
- });
- t.push("","[항공편]");
- state.flights.forEach(f=>t.push(`${f.label}: ${f.airline} ${f.flightNo} / ${f.from} → ${f.to} / ${f.depart||""} ~ ${f.arrive||""} / 예약 ${f.booking||""}`));
- t.push("","[호텔]");
- state.hotels.forEach(h=>t.push(`${h.city} ${h.name} / ${h.checkin||""} ~ ${h.checkout||""} / ${h.address||""} / 예약 ${h.booking||""}`));
- try{
-   await navigator.clipboard.writeText(t.join("\n"));
-   alert("준비물, 일정, 항공편, 호텔 정보를 복사했습니다.");
- }catch(e){alert("브라우저에서 복사를 허용하지 않았습니다.");}
-};
-document.getElementById("resetBtn").onclick=()=>{
- if(confirm("여행 날짜, 준비물 체크, 일정, 항공편, 호텔 정보를 모두 초기 상태로 되돌릴까요?")){
-   state=fresh();save();updateDate();renderPacking();renderSchedule();renderBooking();
- }
-};
-window.addEventListener("beforeinstallprompt",e=>{
- e.preventDefault();deferredPrompt=e;document.getElementById("installBanner").classList.add("show");
-});
-document.getElementById("installBtn").onclick=async()=>{
- if(!deferredPrompt)return;
- deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;
- document.getElementById("installBanner").classList.remove("show");
-};
-if("serviceWorker" in navigator){
- window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));
-}
-
-save();
-updateDate();
-renderPacking();
-renderSchedule();
-renderBooking();
-</script>
+<nav class="bottom"><button id="checkAllBtn">✓ 전체 체크</button><button id="copyBtn">📋 일정 복사</button><button id="resetBtn" class="danger">↺ 초기화</button></nav>
+<script src="app.js"></script>
 </body>
 </html>
